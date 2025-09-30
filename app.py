@@ -5,8 +5,13 @@ from pathlib import Path
 
 from fastapi import FastAPI, UploadFile, Header, HTTPException
 from docling.document_converter import DocumentConverter
+from docling.models.layout_model import LayoutModel
+from docling.models.utils.model_configs import get_default_layout_model_config
 
 app = FastAPI()
+
+# Pre-download layout model at startup to avoid runtime Hugging Face throttling.
+LayoutModel().download_models(layout_model_config=get_default_layout_model_config("cpu"))
 
 
 @app.get("/health")
